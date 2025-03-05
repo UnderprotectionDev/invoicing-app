@@ -1,4 +1,5 @@
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -8,11 +9,23 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { CirclePlus } from "lucide-react";
+import Link from "next/link";
 
 export default function Dashboard() {
   return (
-    <main className="flex flex-col justify-center h-full text-center gap-4">
-      <h1 className="text-3xl font-bold">Invoices</h1>
+    <main className="flex flex-col justify-center h-full text-center gap-6 max-w-5xl mx-auto my-12">
+      <div className="flex justify-between">
+        <h1 className="text-3xl font-bold">Invoices</h1>
+        <p>
+          <Button variant={"ghost"} className="inline-flex gap-2" asChild>
+            <Link href="invoices/new">
+              <CirclePlus className="size-4" />
+              Create Invoice
+            </Link>
+          </Button>
+        </p>
+      </div>
 
       <Table>
         <TableCaption>A list of your recent invoices.</TableCaption>
