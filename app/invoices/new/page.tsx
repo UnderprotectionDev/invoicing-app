@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -11,26 +12,36 @@ export default function NewInvoice() {
 
       <form className="grid gap-4 max-w-sm">
         <div>
-          <Label className="block font-semibold text-sm mb-2">
+          <Label htmlFor="name" className="block font-semibold text-sm mb-2">
             Billing Name
           </Label>
-          <Input type="text" />
+          <Input id="name" name="name" type="text" />
         </div>
         <div>
-          <Label className="block font-semibold text-sm mb-2">
+          <Label htmlFor="email" className="block font-semibold text-sm mb-2">
             Billing Email
           </Label>
-          <Input type="email" />
+          <Input id="email" name="email" type="email" />
         </div>
         <div>
-          <Label className="block font-semibold text-sm mb-2">Value</Label>
-          <Input type="number" />
+          <Label htmlFor="value" className="block font-semibold text-sm mb-2">
+            Value
+          </Label>
+          <Input id="value" name="value" type="number" />
         </div>
         <div>
-          <Label className="block font-semibold text-sm mb-2">
+          <Label
+            htmlFor="description"
+            className="block font-semibold text-sm mb-2"
+          >
             Description
           </Label>
-          <Textarea></Textarea>
+          <Textarea id="description" name="description" />
+        </div>
+        <div>
+          <Button type="submit" className="w-full">
+            Create Invoice
+          </Button>
         </div>
       </form>
     </main>
