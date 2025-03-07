@@ -6,15 +6,16 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { SyntheticEvent, useState } from "react";
+import Form from "next/form";
 
 export default function NewInvoice() {
   const [state, setState] = useState("ready");
   async function handleOnSubmit(event: SyntheticEvent) {
-    if (state === "pending") return;
+    if (state === "pending") {
+      event.preventDefault();
+      return;
+    }
     setState("pending");
-    const target = event.target as HTMLFormElement;
-    const formData = new FormData(target);
-    await createAction(formData);
   }
   return (
     <main className="flex flex-col justify-center h-full gap-6 max-w-5xl mx-auto my-12">
@@ -22,7 +23,7 @@ export default function NewInvoice() {
         <h1 className="text-3xl font-bold">Create Invoice</h1>
       </div>
 
-      <form
+      <Form
         action={createAction}
         onSubmit={handleOnSubmit}
         className="grid gap-4 max-w-sm"
@@ -57,7 +58,7 @@ export default function NewInvoice() {
         <div>
           <SubmitButton />
         </div>
-      </form>
+      </Form>
     </main>
   );
 }
