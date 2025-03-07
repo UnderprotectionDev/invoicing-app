@@ -9,10 +9,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { db } from "@/db";
+import { Invoices } from "@/db/schema";
 import { CirclePlus } from "lucide-react";
 import Link from "next/link";
 
-export default function Dashboard() {
+export default async function Dashboard() {
+  const results = await db.select().from(Invoices);
+  console.log(results);
   return (
     <main className="flex flex-col justify-center h-full text-center gap-6 max-w-5xl mx-auto my-12">
       <div className="flex justify-between">
@@ -39,23 +43,49 @@ export default function Dashboard() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          <TableRow>
-            <TableCell className="font-medium">
-              <span className="font-semibold">11/11/2025</span>
-            </TableCell>
-            <TableCell className="text-left">
-              <span className="font-semibold">John Doe</span>
-            </TableCell>
-            <TableCell className="text-left p-4">
-              <span>john.doe@example.com</span>
-            </TableCell>
-            <TableCell className="text-center p-4">
-              <Badge className="rounded-full">Open</Badge>
-            </TableCell>
-            <TableCell className="text-right p-4">
-              <span className="font-semibold">$250.00</span>
-            </TableCell>
-          </TableRow>
+          {results.map((result) => {
+            return (
+              <TableRow key={result.id}>
+                <TableCell className="font-medium text-left">
+                  <Link
+                    href={`/invoices/${result.id}`}
+                    className="font-semibold p-4"
+                  >
+                    {new Date(result.createTS).toLocaleDateString()}
+                  </Link>
+                </TableCell>
+                <TableCell className="text-left">
+                  <Link
+                    href={`/invoices/${result.id}`}
+                    className="font-semibold p-4"
+                  >
+                    John Doe
+                  </Link>
+                </TableCell>
+                <TableCell className="text-left">
+                  <Link href={`/invoices/${result.id}`} className="p-4">
+                    @example.com
+                  </Link>
+                </TableCell>
+                <TableCell className="text-center">
+                  <Link
+                    href={`/invoices/${result.id}`}
+                    className="font-semibold p-4"
+                  >
+                    <Badge className="rounded-full">{result.status}</Badge>
+                  </Link>
+                </TableCell>
+                <TableCell className="text-right">
+                  <Link
+                    href={`/invoices/${result.id}`}
+                    className="font-semibold p-4"
+                  >
+                    ${(result.value / 100).toFixed(2)}
+                  </Link>
+                </TableCell>
+              </TableRow>
+            );
+          })}
         </TableBody>
       </Table>
     </main>
