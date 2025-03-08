@@ -1,3 +1,4 @@
+import { notFound } from "next/navigation";
 import { db } from "@/db";
 import { Invoices } from "@/db/schema";
 import { eq } from "drizzle-orm";
@@ -10,11 +11,21 @@ type InvoicePageProps = {
 
 export default async function InvoicePage({ params }: InvoicePageProps) {
   const invoiceId = parseInt((await params).invoiceId);
+
+  if (isNaN(invoiceId)) {
+    throw new Error("Invalid invoice ID");
+  }
+
   const [invoice] = await db
     .select()
     .from(Invoices)
     .where(eq(Invoices.id, invoiceId))
     .limit(1);
+
+  if (!invoice) {
+    notFound();
+  }
+
   return (
     <main className="flex flex-col justify-center h-full text-center gap-6 max-w-5xl mx-auto my-12">
       <div className="flex justify-between">
