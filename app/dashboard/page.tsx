@@ -16,7 +16,6 @@ import Link from "next/link";
 
 export default async function Dashboard() {
   const results = await db.select().from(Invoices);
-  console.log(results);
   return (
     <main className="flex flex-col justify-center h-full text-center gap-6 max-w-5xl mx-auto my-12">
       <div className="flex justify-between">
