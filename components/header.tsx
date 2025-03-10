@@ -6,7 +6,6 @@ export function Header() {
   return (
     <header className="mt-8 mb-12">
       <Container>
-        <p>Invoicipedia</p>
         <div>
           <div className="flex justify-between items-center gap-4">
             <div className="flex items-center gap-4">
