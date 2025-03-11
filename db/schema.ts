@@ -19,5 +19,6 @@ export const Invoices = pgTable("invoices", {
   createTS: timestamp("create_ts").defaultNow().notNull(),
   value: integer("value").notNull(),
   description: text("description").notNull(),
+  userId: text("userId").notNull(),
   status: statusEnum("status").default("open").notNull(),
 });

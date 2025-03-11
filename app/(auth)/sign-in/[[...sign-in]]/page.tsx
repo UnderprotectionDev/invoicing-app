@@ -53,6 +53,13 @@ export default function SignInPage() {
               Alternatively, sign in with these platforms
             </p>
             <div className="space-y-2">
+              <p>
+                <SignIn.Passkey asChild>
+                  <Button variant={"outline"} className="w-full">
+                    Continue with Passkey
+                  </Button>
+                </SignIn.Passkey>
+              </p>
               <Clerk.Connection name="google" asChild>
                 <Button className="w-full font-bold" variant={"outline"}>
                   <svg
