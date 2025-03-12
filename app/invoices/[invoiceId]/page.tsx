@@ -1,7 +1,9 @@
 import { notFound } from "next/navigation";
 import { db } from "@/db";
 import { Invoices } from "@/db/schema";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
+import { auth } from "@clerk/nextjs/server";
+import { Container } from "@/components/container";
 
 type InvoicePageProps = {
   params: Promise<{
@@ -10,6 +12,10 @@ type InvoicePageProps = {
 };
 
 export default async function InvoicePage({ params }: InvoicePageProps) {
+  const { userId } = await auth();
+  if (!userId) {
+    return;
+  }
   const invoiceId = parseInt((await params).invoiceId);
 
   if (isNaN(invoiceId)) {
@@ -19,7 +25,7 @@ export default async function InvoicePage({ params }: InvoicePageProps) {
   const [invoice] = await db
     .select()
     .from(Invoices)
-    .where(eq(Invoices.id, invoiceId))
+    .where(and(eq(Invoices.id, invoiceId), eq(Invoices.userId, userId)))
     .limit(1);
 
   if (!invoice) {
@@ -27,9 +33,8 @@ export default async function InvoicePage({ params }: InvoicePageProps) {
   }
 
   return (
-    <main className="flex flex-col justify-center h-full text-center gap-6 max-w-5xl mx-auto my-12">
-      <div className="flex justify-between">
-        <h1 className="text-3xl font-bold">Invoices #{invoiceId}</h1>
+    <main className="w-full h-full">
+      <Container>
         <p className="text-3xl mb-3">${(invoice.value / 100).toFixed(2)}</p>
 
         <p className="text-lg mb-8">{invoice.description}</p>
@@ -62,7 +67,7 @@ export default async function InvoicePage({ params }: InvoicePageProps) {
             <span>john.doe@example.com</span>
           </li>
         </ul>
-      </div>
+      </Container>
     </main>
   );
 }

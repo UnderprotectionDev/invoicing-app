@@ -12,10 +12,10 @@ import {
 } from "@/components/ui/table";
 import { db } from "@/db";
 import { Invoices } from "@/db/schema";
-import { CirclePlus } from "lucide-react";
-import Link from "next/link";
 import { auth } from "@clerk/nextjs/server";
 import { eq } from "drizzle-orm";
+import { CirclePlus } from "lucide-react";
+import Link from "next/link";
 
 export default async function Dashboard() {
   const { userId } = await auth();
