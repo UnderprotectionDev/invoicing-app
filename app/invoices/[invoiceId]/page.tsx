@@ -7,12 +7,14 @@ import { Container } from "@/components/container";
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { ChevronDown } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { AVAILABLE_STATUSES } from "@/data/invoices";
 
 type InvoicePageProps = {
   params: Promise<{
@@ -72,7 +74,15 @@ export default async function InvoicePage({ params }: InvoicePageProps) {
                   <ChevronDown className="w-4 h-auto" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent></DropdownMenuContent>
+              <DropdownMenuContent>
+                {AVAILABLE_STATUSES.map((status) => {
+                  return (
+                    <DropdownMenuItem key={status.id}>
+                      {status.label}
+                    </DropdownMenuItem>
+                  );
+                })}
+              </DropdownMenuContent>
             </DropdownMenu>
           </div>
         </div>
