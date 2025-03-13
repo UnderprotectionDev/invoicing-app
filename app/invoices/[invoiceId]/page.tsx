@@ -15,6 +15,7 @@ import { ChevronDown } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { AVAILABLE_STATUSES } from "@/data/invoices";
+import { updateStatusAction } from "@/actions";
 
 type InvoicePageProps = {
   params: Promise<{
@@ -78,7 +79,11 @@ export default async function InvoicePage({ params }: InvoicePageProps) {
                 {AVAILABLE_STATUSES.map((status) => {
                   return (
                     <DropdownMenuItem key={status.id}>
-                      {status.label}
+                      <form action={updateStatusAction}>
+                        <input type="hidden" name="id" value={invoice.id} />
+                        <input type="hidden" name="status" value={status.id} />
+                        <button type="submit">{status.label}</button>
+                      </form>
                     </DropdownMenuItem>
                   );
                 })}

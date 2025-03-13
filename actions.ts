@@ -3,7 +3,9 @@
 import { redirect } from "next/navigation";
 import { auth } from "@clerk/nextjs/server";
 import { db } from "./db";
-import { Invoices } from "./db/schema";
+import { Invoices, Status } from "./db/schema";
+import { and, eq } from "drizzle-orm";
+import { revalidatePath } from "next/cache";
 
 export async function createAction(formData: FormData) {
   const { userId } = await auth();
@@ -26,4 +28,23 @@ export async function createAction(formData: FormData) {
     });
 
   redirect(`/invoices/${result[0].id}`);
+}
+
+export async function updateStatusAction(formData: FormData) {
+  const { userId } = await auth();
+  if (!userId) {
+    throw new Error("Unauthorized");
+  }
+  const id = formData.get("id") as string;
+  const status = formData.get("status") as Status;
+
+  const result = await db
+    .update(Invoices)
+    .set({ status })
+    .where(and(eq(Invoices.id, parseInt(id)), eq(Invoices.userId, userId)))
+    .returning({
+      id: Invoices.id,
+    });
+
+  revalidatePath(`/invoices/${id}`, "page");
 }
