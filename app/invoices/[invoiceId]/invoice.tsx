@@ -1,3 +1,5 @@
+"use client";
+
 import { Invoices } from "@/db/schema";
 import { Container } from "@/components/container";
 import {
@@ -12,12 +14,30 @@ import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { AVAILABLE_STATUSES } from "@/data/invoices";
 import { updateStatusAction } from "@/actions";
+import { useOptimistic } from "react";
 
 type InvoiceProps = {
   invoice: typeof Invoices.$inferSelect;
 };
 
-export default async function Invoice({ invoice }: InvoiceProps) {
+export default function Invoice({ invoice }: InvoiceProps) {
+  const [currentStatus, setCurrentStatus] = useOptimistic(
+    invoice.status,
+    (state, newStatus) => {
+      return String(newStatus);
+    }
+  );
+
+  async function handleOnUpdateStatus(formData: FormData) {
+    const originalStatus = currentStatus;
+    setCurrentStatus(formData.get("status") as string);
+    try {
+      await updateStatusAction(formData);
+    } catch {
+      setCurrentStatus(originalStatus);
+    }
+  }
+
   return (
     <main className="w-full h-full">
       <Container>
@@ -27,13 +47,13 @@ export default async function Invoice({ invoice }: InvoiceProps) {
             <Badge
               className={cn(
                 "rounded-full capitalize",
-                invoice.status === "open" && "bg-blue-500",
-                invoice.status === "paid" && "bg-green-600",
-                invoice.status === "void" && "bg-zinc-700",
-                invoice.status === "uncollectible" && "bg-red-600"
+                currentStatus === "open" && "bg-blue-500",
+                currentStatus === "paid" && "bg-green-600",
+                currentStatus === "void" && "bg-zinc-700",
+                currentStatus === "uncollectible" && "bg-red-600"
               )}
             >
-              {invoice.status}
+              {currentStatus}
             </Badge>
           </h1>
 
@@ -53,7 +73,7 @@ export default async function Invoice({ invoice }: InvoiceProps) {
                 {AVAILABLE_STATUSES.map((status) => {
                   return (
                     <DropdownMenuItem key={status.id}>
-                      <form action={updateStatusAction}>
+                      <form action={handleOnUpdateStatus}>
                         <input type="hidden" name="id" value={invoice.id} />
                         <input type="hidden" name="status" value={status.id} />
                         <button type="submit">{status.label}</button>
