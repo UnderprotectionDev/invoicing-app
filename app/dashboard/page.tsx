@@ -11,7 +11,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { db } from "@/db";
-import { Invoices } from "@/db/schema";
+import { Customers, Invoices } from "@/db/schema";
 import { auth } from "@clerk/nextjs/server";
 import { eq } from "drizzle-orm";
 import { CirclePlus } from "lucide-react";
@@ -25,7 +25,13 @@ export default async function Dashboard() {
   const results = await db
     .select()
     .from(Invoices)
+    .innerJoin(Customers, eq(Invoices.customerId, Customers.id))
     .where(eq(Invoices.userId, userId));
+
+  const invoices = results.map(({ invoices, customers }) => ({
+    ...invoices,
+    customer: customers,
+  }));
   return (
     <main className="h-full text-center gap-6 my-12">
       <Container>
@@ -53,44 +59,44 @@ export default async function Dashboard() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {results.map((result) => {
+            {invoices.map((invoice) => {
               return (
-                <TableRow key={result.id}>
+                <TableRow key={invoice.id}>
                   <TableCell className="font-medium text-left">
                     <Link
-                      href={`/invoices/${result.id}`}
+                      href={`/invoices/${invoice.id}`}
                       className="font-semibold p-4"
                     >
-                      {new Date(result.createTS).toLocaleDateString()}
+                      {new Date(invoice.createTS).toLocaleDateString()}
                     </Link>
                   </TableCell>
                   <TableCell className="text-left">
                     <Link
-                      href={`/invoices/${result.id}`}
+                      href={`/invoices/${invoice.id}`}
                       className="font-semibold p-4"
                     >
-                      John Doe
+                      {invoice.customer.name}
                     </Link>
                   </TableCell>
                   <TableCell className="text-left">
-                    <Link href={`/invoices/${result.id}`} className="p-4">
-                      @example.com
+                    <Link href={`/invoices/${invoice.id}`} className="p-4">
+                      {invoice.customer.email}
                     </Link>
                   </TableCell>
                   <TableCell className="text-center">
                     <Link
-                      href={`/invoices/${result.id}`}
+                      href={`/invoices/${invoice.id}`}
                       className="font-semibold p-4"
                     >
-                      <Badge className="rounded-full">{result.status}</Badge>
+                      <Badge className="rounded-full">{invoice.status}</Badge>
                     </Link>
                   </TableCell>
                   <TableCell className="text-right">
                     <Link
-                      href={`/invoices/${result.id}`}
+                      href={`/invoices/${invoice.id}`}
                       className="font-semibold p-4"
                     >
-                      ${(result.value / 100).toFixed(2)}
+                      ${(invoice.value / 100).toFixed(2)}
                     </Link>
                   </TableCell>
                 </TableRow>
