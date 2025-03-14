@@ -8,13 +8,23 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { ChevronDown, Ellipsis } from "lucide-react";
+import { ChevronDown, CreditCard, Ellipsis, Trash2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { AVAILABLE_STATUSES } from "@/data/invoices";
 import { deleteInvoiceAction, updateStatusAction } from "@/actions";
 import { useOptimistic } from "react";
+import Link from "next/link";
 
 type InvoiceProps = {
   invoice: typeof Invoices.$inferSelect;
@@ -84,26 +94,68 @@ export default function Invoice({ invoice }: InvoiceProps) {
               </DropdownMenuContent>
             </DropdownMenu>
 
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  className="flex items-center gap-2"
-                  variant="outline"
-                  type="button"
-                >
-                  <span className="sr-only">More Options</span>
-                  <Ellipsis className="w-4 h-auto" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                <DropdownMenuItem>
-                  <form action={deleteInvoiceAction}>
-                    <input type="hidden" name="id" value={invoice.id} />
-                    <button type="submit">Delete Invoice</button>
-                  </form>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <Dialog>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    className="flex items-center gap-2"
+                    variant="outline"
+                    type="button"
+                  >
+                    <span className="sr-only">More Options</span>
+                    <Ellipsis className="w-4 h-auto" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuItem>
+                    <DialogTrigger asChild>
+                      <button className="flex items-center gap-2" type="submit">
+                        <Trash2 className="w-4 h-auto" />
+                        Delete Invoice
+                      </button>
+                    </DialogTrigger>
+                  </DropdownMenuItem>
+
+                  <DropdownMenuItem>
+                    <Link
+                      href={`/invoices/${invoice.id}/payment`}
+                      className="flex items-center gap-2"
+                    >
+                      <CreditCard className="w-4 h-auto" />
+                      Payment
+                    </Link>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+
+              <DialogContent className="bg-white">
+                <DialogHeader>
+                  <DialogTitle className="text-2xl">
+                    Delete Invoice?
+                  </DialogTitle>
+                  <DialogDescription>
+                    This action cannot be undone. This will permanently delete
+                    your invoice and remove your data from our servers.
+                  </DialogDescription>
+                  <DialogFooter>
+                    <form
+                      className="flex justify-center"
+                      action={deleteInvoiceAction}
+                    >
+                      <input type="hidden" name="id" value={invoice.id} />
+                      <Button
+                        variant="destructive"
+                        className="flex items-center gap-2"
+                        type="submit"
+                      >
+                        <Trash2 className="w-4 h-auto" />
+                        Delete Invoice
+                      </Button>
+                    </form>
+                  </DialogFooter>
+                </DialogHeader>
+              </DialogContent>
+            </Dialog>
           </div>
         </div>
 
