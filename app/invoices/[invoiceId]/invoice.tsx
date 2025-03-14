@@ -1,6 +1,6 @@
 "use client";
 
-import { Invoices } from "@/db/schema";
+import { Customers, Invoices } from "@/db/schema";
 import { Container } from "@/components/container";
 import {
   DropdownMenu,
@@ -27,7 +27,9 @@ import { useOptimistic } from "react";
 import Link from "next/link";
 
 type InvoiceProps = {
-  invoice: typeof Invoices.$inferSelect;
+  invoice: typeof Invoices.$inferSelect & {
+    customer: typeof Customers.$inferSelect;
+  };
 };
 
 export default function Invoice({ invoice }: InvoiceProps) {
@@ -182,13 +184,13 @@ export default function Invoice({ invoice }: InvoiceProps) {
             <strong className="block w-28 flex-shrink-0 font-medium text-sm">
               Billing Name
             </strong>
-            <span>John Doe</span>
+            <span>{invoice.customer.name}</span>
           </li>
           <li className="flex gap-4">
             <strong className="block w-28 flex-shrink-0 font-medium text-sm">
               Billing Email
             </strong>
-            <span>john.doe@example.com</span>
+            <span>{invoice.customer.email}</span>
           </li>
         </ul>
       </Container>
