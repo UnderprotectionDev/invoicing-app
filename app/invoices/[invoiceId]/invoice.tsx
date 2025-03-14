@@ -9,11 +9,11 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Ellipsis } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { AVAILABLE_STATUSES } from "@/data/invoices";
-import { updateStatusAction } from "@/actions";
+import { deleteInvoiceAction, updateStatusAction } from "@/actions";
 import { useOptimistic } from "react";
 
 type InvoiceProps = {
@@ -81,6 +81,27 @@ export default function Invoice({ invoice }: InvoiceProps) {
                     </DropdownMenuItem>
                   );
                 })}
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  className="flex items-center gap-2"
+                  variant="outline"
+                  type="button"
+                >
+                  <span className="sr-only">More Options</span>
+                  <Ellipsis className="w-4 h-auto" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuItem>
+                  <form action={deleteInvoiceAction}>
+                    <input type="hidden" name="id" value={invoice.id} />
+                    <button type="submit">Delete Invoice</button>
+                  </form>
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
