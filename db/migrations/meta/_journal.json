@@ -15,6 +15,13 @@
       "when": 1741704915989,
       "tag": "0001_regular_stephen_strange",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1741961573703,
+      "tag": "0002_mute_thor_girl",
+      "breakpoints": true
     }
   ]
 }
