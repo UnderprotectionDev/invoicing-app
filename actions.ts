@@ -6,6 +6,9 @@ import { db } from "./db";
 import { Customers, Invoices, Status } from "./db/schema";
 import { and, eq, isNull } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
+import Stripe from "stripe";
+
+const stripe = new Stripe(process.env.STRIPE_API_SECRET as string);
 
 export async function createAction(formData: FormData) {
   const { userId, orgId } = await auth();
