@@ -23,6 +23,7 @@ export const Invoices = pgTable("invoices", {
   value: integer("value").notNull(),
   description: text("description").notNull(),
   userId: text("userId").notNull(),
+  organizationId: text("organizationId"),
   customerId: integer("customerId").references(() => Customers.id),
   status: statusEnum("status").default("open").notNull(),
 });
@@ -33,4 +34,5 @@ export const Customers = pgTable("customers", {
   name: text("name").notNull(),
   email: text("email").notNull(),
   userId: text("userId").notNull(),
+  organizationId: text("organizationId"),
 });

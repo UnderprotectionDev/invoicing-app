@@ -22,6 +22,13 @@
       "when": 1741961573703,
       "tag": "0002_mute_thor_girl",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1742127337219,
+      "tag": "0003_striped_jocasta",
+      "breakpoints": true
     }
   ]
 }
