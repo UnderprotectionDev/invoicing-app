@@ -8,7 +8,7 @@ import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
 export async function createAction(formData: FormData) {
-  const { userId } = await auth();
+  const { userId, orgId } = await auth();
   if (!userId) {
     throw new Error("Unauthorized");
   }
@@ -23,6 +23,7 @@ export async function createAction(formData: FormData) {
       name,
       email,
       userId,
+      organizationId: orgId || null,
     })
     .returning({
       id: Customers.id,
@@ -34,6 +35,7 @@ export async function createAction(formData: FormData) {
       value,
       description,
       userId,
+      organizationId: orgId || null,
       customerId: customer.id,
       status: "open",
     })
