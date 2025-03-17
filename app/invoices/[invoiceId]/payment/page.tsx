@@ -1,32 +1,17 @@
 import { Customers, Invoices } from "@/db/schema";
 import { Container } from "@/components/container";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+
 import { Button } from "@/components/ui/button";
-import { Check, ChevronDown, CreditCard, Ellipsis, Trash2 } from "lucide-react";
+import { Check, CreditCard } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { AVAILABLE_STATUSES } from "@/data/invoices";
-import { deleteInvoiceAction, updateStatusAction } from "@/actions";
-import { useOptimistic } from "react";
-import Link from "next/link";
+
 import { auth } from "@clerk/nextjs/server";
 import { db } from "@/db";
-import { and, eq, isNull } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { notFound } from "next/navigation";
+import Stripe from "stripe";
+import { updateStatusAction } from "@/actions";
 
 type PaymentPageProps = {
   params: Promise<{
@@ -38,11 +23,13 @@ type PaymentPageProps = {
   }>;
 };
 
+const stripe = new Stripe(String(process.env.STRIPE_API_SECRET));
+
 export default async function Invoice({
   params,
   searchParams,
 }: PaymentPageProps) {
-  const { userId, orgId } = await auth();
+  const { userId } = await auth();
   if (!userId) {
     return;
   }
@@ -53,42 +40,55 @@ export default async function Invoice({
   const isCanceled = (await searchParams).status === "canceled";
   let isError = isSuccess && !sessionId;
 
+  console.log("isSuccess", isSuccess);
+  console.log("isCanceled", isCanceled);
+
+  if (Number.isNaN(invoiceId)) {
+    throw new Error("Invalid Invoice ID");
+  }
+
+  if (isSuccess) {
+    const { payment_status } = await stripe.checkout.sessions.retrieve(
+      sessionId
+    );
+
+    if (payment_status !== "paid") {
+      isError = true;
+    } else {
+      const formData = new FormData();
+      formData.append("id", String(invoiceId));
+      formData.append("status", "paid");
+      await updateStatusAction(formData);
+    }
+  }
+
   if (isNaN(invoiceId)) {
     throw new Error("Invalid invoice ID");
   }
 
-  let invoice;
-  if (orgId) {
-    [invoice] = await db
-      .select()
-      .from(Invoices)
-      .innerJoin(Customers, eq(Invoices.customerId, Customers.id))
-      .where(
-        and(eq(Invoices.id, invoiceId), eq(Invoices.organizationId, orgId))
-      )
-      .limit(1);
-  } else {
-    [invoice] = await db
-      .select()
-      .from(Invoices)
-      .innerJoin(Customers, eq(Invoices.customerId, Customers.id))
-      .where(
-        and(
-          eq(Invoices.id, invoiceId),
-          eq(Invoices.userId, userId),
-          isNull(Invoices.organizationId)
-        )
-      )
-      .limit(1);
-  }
+  const [result] = await db
+    .select({
+      id: Invoices.id,
+      status: Invoices.status,
+      createTS: Invoices.createTS,
+      description: Invoices.description,
+      value: Invoices.value,
+      name: Customers.name,
+    })
+    .from(Invoices)
+    .innerJoin(Customers, eq(Invoices.customerId, Customers.id))
+    .where(eq(Invoices.id, invoiceId))
+    .limit(1);
 
-  if (!invoice) {
+  if (!result) {
     notFound();
   }
 
   const invoices = {
-    ...invoice.invoices,
-    customer: invoice.customers,
+    ...result,
+    customer: {
+      name: result.name,
+    },
   };
 
   return (
