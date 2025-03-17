@@ -11,7 +11,7 @@ import { db } from "@/db";
 import { eq } from "drizzle-orm";
 import { notFound } from "next/navigation";
 import Stripe from "stripe";
-import { updateStatusAction } from "@/actions";
+import { createPayment, updateStatusAction } from "@/actions";
 
 type PaymentPageProps = {
   params: Promise<{
