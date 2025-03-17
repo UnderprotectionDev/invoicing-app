@@ -1,17 +1,20 @@
-import { Customers, Invoices } from "@/db/schema";
-import { Container } from "@/components/container";
-
-import { Button } from "@/components/ui/button";
+import { eq } from "drizzle-orm";
 import { Check, CreditCard } from "lucide-react";
+import Stripe from "stripe";
+
+import { Container } from "@/components/container";
 import { Badge } from "@/components/ui/badge";
+import { Customers, Invoices } from "@/db/schema";
 import { cn } from "@/lib/utils";
 
-import { auth } from "@clerk/nextjs/server";
-import { db } from "@/db";
-import { eq } from "drizzle-orm";
-import { notFound } from "next/navigation";
-import Stripe from "stripe";
+import { Button } from "@/components/ui/button";
+
 import { createPayment, updateStatusAction } from "@/actions";
+import { db } from "@/db";
+import { notFound } from "next/navigation";
+import { auth } from "@clerk/nextjs/server";
+
+const stripe = new Stripe(String(process.env.STRIPE_API_SECRET));
 
 type PaymentPageProps = {
   params: Promise<{
@@ -22,8 +25,6 @@ type PaymentPageProps = {
     status: string;
   }>;
 };
-
-const stripe = new Stripe(String(process.env.STRIPE_API_SECRET));
 
 export default async function Invoice({
   params,
@@ -84,7 +85,7 @@ export default async function Invoice({
     notFound();
   }
 
-  const invoices = {
+  const invoice = {
     ...result,
     customer: {
       name: result.name,
@@ -108,39 +109,37 @@ export default async function Invoice({
           <div>
             <div className="flex justify-between mb-8">
               <h1 className="flex items-center gap-4 text-3xl font-semibold">
-                Invoice {invoices.id}
+                Invoice {invoice.id}
                 <Badge
                   className={cn(
                     "rounded-full capitalize",
-                    invoices.status === "open" && "bg-blue-500",
-                    invoices.status === "paid" && "bg-green-600",
-                    invoices.status === "void" && "bg-zinc-700",
-                    invoices.status === "uncollectible" && "bg-red-600"
+                    invoice.status === "open" && "bg-blue-500",
+                    invoice.status === "paid" && "bg-green-600",
+                    invoice.status === "void" && "bg-zinc-700",
+                    invoice.status === "uncollectible" && "bg-red-600"
                   )}
                 >
-                  {invoices.status}
+                  {invoice.status}
                 </Badge>
               </h1>
             </div>
 
-            <p className="text-3xl mb-3">
-              ${(invoices.value / 100).toFixed(2)}
-            </p>
+            <p className="text-3xl mb-3">${(invoice.value / 100).toFixed(2)}</p>
 
-            <p className="text-lg mb-8">{invoices.description}</p>
+            <p className="text-lg mb-8">{invoice.description}</p>
           </div>
           <div>
             <h2 className="text-xl font-bold mb-4">Manage Invoice</h2>
-            {invoices.status === "open" && (
+            {invoice.status === "open" && (
               <form action={createPayment}>
-                <input type="hidden" name="id" value={invoices.id} />
+                <input type="hidden" name="id" value={invoice.id} />
                 <Button className="flex gap-2 font-bold bg-green-700">
                   <CreditCard className="w-5 h-auto" />
                   Pay Invoice
                 </Button>
               </form>
             )}
-            {invoices.status === "paid" && (
+            {invoice.status === "paid" && (
               <p className="flex gap-2 items-center text-xl font-bold">
                 <Check className="w-8 h-auto bg-green-500 rounded-full text-white p-1" />
                 Invoice Paid
@@ -156,19 +155,19 @@ export default async function Invoice({
             <strong className="block w-28 flex-shrink-0 font-medium text-sm">
               Invoice ID
             </strong>
-            <span>{invoices.id}</span>
+            <span>{invoice.id}</span>
           </li>
           <li className="flex gap-4">
             <strong className="block w-28 flex-shrink-0 font-medium text-sm">
               Invoice Date
             </strong>
-            <span>{new Date(invoices.createTS).toLocaleDateString()}</span>
+            <span>{new Date(invoice.createTS).toLocaleDateString()}</span>
           </li>
           <li className="flex gap-4">
             <strong className="block w-28 flex-shrink-0 font-medium text-sm">
               Billing Name
             </strong>
-            <span>{invoices.customer.name}</span>
+            <span>{invoice.customer.name}</span>
           </li>
         </ul>
       </Container>

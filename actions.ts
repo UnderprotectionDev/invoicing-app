@@ -137,7 +137,7 @@ export async function createPayment(formData: FormData) {
       {
         price_data: {
           currency: "usd",
-          product: "prod_QusOUzstGsvmvf",
+          product: "prod_Rxbw7A6n7RVja9",
           unit_amount: result.value,
         },
         quantity: 1,
