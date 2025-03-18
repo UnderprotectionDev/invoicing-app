@@ -41,8 +41,8 @@ export const InvoiceCreatedEmail = ({
           </Button>
         </Section>
         <Hr style={hr} />
-        <Link href="https://underprotection.dev" style={reportLink}>
-          Space Jelly
+        <Link href="https://invoicipedia.com" style={reportLink}>
+          Invoicipedia
         </Link>
       </Container>
     </Body>
