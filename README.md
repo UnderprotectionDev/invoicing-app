@@ -4,7 +4,7 @@
 
 <p>A modern, full-stack invoicing platform built with Next.js, featuring secure authentication, real-time updates, and seamless payment processing with Stripe. Create, manage, and track invoices with an intuitive user interface.</p>
 
-![Dashboard](/public/globe.svg)
+![Dashboard](/public/project-images/dashboard.png)
 
 [![Next.js](https://img.shields.io/badge/Next.js-black?style=for-the-badge&logo=next.js&logoColor=white)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
@@ -116,17 +116,25 @@ Visit [http://localhost:3000](http://localhost:3000) to explore the application.
 
 <div align="center">
 
-### Dashboard
-
-![Dashboard](/public/globe.svg)
-
 ### Invoice Creation
 
-![Create Invoice](/public/file.svg)
+![Create Invoice](/public/project-images/create-invoice.png)
 
-### Invoice Details
+### Invoice Detail
 
-![Invoice Details](/public/window.svg)
+![Invoice Details](/public/project-images/invoice-detail.png)
+
+### Invoice Payment
+
+![Invoice Payment](/public/project-images/invoice-payment.png)
+
+### Stripe
+
+![Stripe](/public/project-images/stripe.png)
+
+### Organization
+
+![Organization](/public/project-images/organization.png)
 
 </div>
 
