@@ -1,6 +1,6 @@
 <div align="center">
 
-# Invoicipedia 🧾
+# Invoicipedia 📄
 
 <p>A modern, full-stack invoicing platform built with Next.js, featuring secure authentication, real-time updates, and seamless payment processing with Stripe. Create, manage, and track invoices with an intuitive user interface.</p>
 
@@ -10,8 +10,9 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Clerk](https://img.shields.io/badge/Clerk-6C47FF?style=for-the-badge&logo=clerk&logoColor=white)](https://clerk.com/)
 [![Stripe](https://img.shields.io/badge/Stripe-008CDD?style=for-the-badge&logo=stripe&logoColor=white)](https://stripe.com/)
-[![DrizzleORM](https://img.shields.io/badge/Drizzle-000000?style=for-the-badge&logo=drizzle&logoColor=white)](https://orm.drizzle.team/)
+[![DrizzleORM](https://img.shields.io/badge/Drizzle-22C55E?style=for-the-badge&logo=drizzle&logoColor=white)](https://orm.drizzle.team/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-06B6D4?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
+[![Shadcn UI](https://img.shields.io/badge/Shadcn_UI-000000?style=for-the-badge&logo=shadcnui&logoColor=white)](https://ui.shadcn.com/)
 [![Resend](https://img.shields.io/badge/Resend-000000?style=for-the-badge&logo=minutemailer&logoColor=white)](https://resend.com/)
 [![Vercel](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://vercel.com/)
 
@@ -102,12 +103,11 @@ Visit [http://localhost:3000](http://localhost:3000) to explore the application.
 ### UI & Styling
 
 - **[Tailwind CSS](https://tailwindcss.com/)** - Utility-first CSS framework for rapid UI development
-- **[Radix UI](https://www.radix-ui.com/)** - Unstyled, accessible UI components
+- **[Shadcn UI](https://ui.shadcn.com/)** - Unstyled, accessible UI components
 - **[Lucide Icons](https://lucide.dev/)** - Beautiful, consistent icon set
 
 ### Development & Deployment
 
-- **[ESLint](https://eslint.org/)** - Code quality and consistency
 - **[Vercel](https://vercel.com/)** - Deployment platform optimized for Next.js
 
 </details>
@@ -134,24 +134,31 @@ Visit [http://localhost:3000](http://localhost:3000) to explore the application.
 
 Create a `.env` file in the root directory with the following variables:
 
-| Variable                            | Description                                     |
-| ----------------------------------- | ----------------------------------------------- |
-| `DATABASE_URL`                      | PostgreSQL connection string                    |
-| `CLERK_SECRET_KEY`                  | Clerk secret key for server-side authentication |
-| `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` | Clerk publishable key for client-side auth      |
-| `STRIPE_API_SECRET`                 | Stripe secret API key                           |
-| `STRIPE_WEBHOOK_SECRET`             | Secret for verifying Stripe webhook events      |
-| `RESEND_API_KEY`                    | API key for Resend email service                |
-| `ME_ID`                             | Your user ID for admin functions                |
+| Variable                                          | Description                                     |
+| ------------------------------------------------- | ----------------------------------------------- |
+| `XATA_DATABASE_URL`                               | PostgreSQL connection string                    |
+| `CLERK_SECRET_KEY`                                | Clerk secret key for server-side authentication |
+| `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`               | Clerk publishable key for client-side auth      |
+| `NEXT_PUBLIC_CLERK_SIGN_IN_URL`                   | URL for sign-in page                            |
+| `NEXT_PUBLIC_CLERK_SIGN_IN_FALLBACK_REDIRECT_URL` | Fallback redirect URL after sign-in             |
+| `NEXT_PUBLIC_CLERK_SIGN_UP_URL`                   | URL for sign-up page                            |
+| `STRIPE_API_SECRET`                               | Stripe secret API key                           |
+| `RESEND_API_KEY`                                  | API key for Resend email service                |
+| `ME_ID`                                           | ME_ID variable                                  |
 
 Example .env file:
 
 ```
-DATABASE_URL=postgres://user:password@localhost:5432/invoicing
-CLERK_SECRET_KEY=clerk_secret_key
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=clerk_publishable_key
-STRIPE_API_SECRET=stripe_secret_key
-STRIPE_WEBHOOK_SECRET=stripe_webhook_secret
-RESEND_API_KEY=resend_api_key
-ME_ID=your_user_id
+XATA_DATABASE_URL=your_postgresql_connection_string
+
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your_clerk_publishable_key
+CLERK_SECRET_KEY=your_clerk_secret_key
+
+NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
+NEXT_PUBLIC_CLERK_SIGN_IN_FALLBACK_REDIRECT_URL=/dashboard
+NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
+
+STRIPE_API_SECRET=your_stripe_secret_key
+
+RESEND_API_KEY=your_resend_api_key
 ```
