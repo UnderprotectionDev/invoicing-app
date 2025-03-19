@@ -127,7 +127,7 @@ export async function deleteInvoiceAction(formData: FormData) {
 
 export async function createPayment(formData: FormData) {
   const { userId } = await auth();
-  if (userId !== process.env.ME_ID) return;
+  // if (userId !== process.env.ME_ID) return;
 
   const headersList = await headers();
   const origin = headersList.get("origin");
